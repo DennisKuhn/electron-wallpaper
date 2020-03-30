@@ -1,10 +1,55 @@
 {
     "configurations": [
         {
+            "name": "Ubuntu",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "./node_modules/node-addon-api/",
+                "/usr/include/linux/",
+                "/usr/lib/gcc/x86_64-linux-gnu/7/include/",
+                "/usr/include/gtk-3.0",
+                "/usr/include/at-spi2-atk/2.0",
+                "/usr/include/at-spi-2.0",
+                "/usr/include/dbus-1.0",
+                "/usr/lib/x86_64-linux-gnu/dbus-1.0/include",
+                "/usr/include/gtk-3.0",
+                "/usr/include/gio-unix-2.0/",
+                "/usr/include/cairo",
+                "/usr/include/pango-1.0",
+                "/usr/include/harfbuzz",
+                "/usr/include/pango-1.0",
+                "/usr/include/atk-1.0",
+                "/usr/include/cairo",
+                "/usr/include/pixman-1",
+                "/usr/include/freetype2",
+                "/usr/include/libpng16",
+                "/usr/include/freetype2",
+                "/usr/include/libpng16",
+                "/usr/include/gdk-pixbuf-2.0",
+                "/usr/include/libpng16",
+                "/usr/include/glib-2.0",
+                "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "${default}",
+            "compilerArgs": [
+                "-Wall",
+                "-Wextra",
+                "-mtune=native",
+                "-no-pie",
+                "`pkg-config gtk+-3.0 --cflags`",
+                "`pkg-config --libs gtk+-3.0`",
+                "-lm"
+            ]
+        },
+        {
             "name": "Win32",
             "includePath": [
                 "${workspaceFolder}/**",
-                "node_modules\\node-addon-api\\"
+                "./node_modules/node-addon-api/"
             ],
             "defines": [
                 "_DEBUG",

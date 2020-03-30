@@ -1,26 +1,39 @@
 {
-  "targets": [
+  'targets': [
     {
-      "target_name": "electron-wallpaper",
-      "sources": [
-        "src/bindings.cc",
-        "src/output.cc"
+      'target_name': 'electron-wallpaper',
+      'sources': [
+        'src/bindings.cc',
+        'src/output.cc',
+        '<!@(node ./scripts/source-for-target.js)',
       ],
-      "include_dirs": [
-        "<!@(node -p \"require('node-addon-api').include\")"
+      'include_dirs': [
+        '<!@(node -p "require(\'node-addon-api\').include")'
       ],
-      'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ],
+      'cflags!': [ '-fno-exceptions' ],
+      'cflags_cc!': [ '-fno-exceptions' ],
+      'xcode_settings': {
+        'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+        'CLANG_CXX_LIBRARY': 'libc++',
+        'MACOSX_DEPLOYMENT_TARGET': '10.7',
+      },
+      'msvs_settings': {
+        'VCCLCompilerTool': { 'ExceptionHandling': 1 },
+      },
       "conditions": [
         [
-          "OS==\"win\"",
+          'OS=="win"',
           {
-            "sources": ["src/electronwallpaper_win.cc"]
+            'defines': [ 'ISWIN' ],
           }
         ],
         [
-          "OS!=\"win\"",
+          'OS=="linux"',
           {
-            "sources": ["src/electronwallpaper_noop.cc"]
+              "cflags": [
+                "<!@(pkg-config --cflags --libs gtk+-3.0)",
+              ],
+              'defines': [ 'ISLINUX' ],
           }
         ]
       ]

@@ -21,6 +21,7 @@
 
 void AttachWindowExport(const Napi::CallbackInfo& info) {
   Napi::Env env = info.Env();
+  electronwallpaper::Output::debug("AttachWindowExport 1");
 
   if (info.Length() < 1) {
     electronwallpaper::Output::createError(env, "attachWindow expects one argument").ThrowAsJavaScriptException();
@@ -29,8 +30,10 @@ void AttachWindowExport(const Napi::CallbackInfo& info) {
   }
 
   unsigned char* windowHandleBuffer = info[0].As<Napi::Uint8Array>().Data();
+  electronwallpaper::Output::debug("AttachWindowExport 2");
 
   electronwallpaper::AttachWindow(windowHandleBuffer, env);
+  electronwallpaper::Output::debug("AttachWindowExport 3");
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {

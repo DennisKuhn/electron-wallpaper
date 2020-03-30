@@ -1,119 +1,124 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='UTF-8'>
-    <title>electron-wallpaper example</title>
-    <style>
-      body {
-        padding: 10px 20px;
-        color: #EEE;
-        background-color: #333;
-        font-family: Arial, Helvetica, sans-serif;
-        text-align: center;
-      }
 
-      h1, h2 {
-        margin: 0 0 10px;
-        font-weight: normal;
-      }
+<head>
+  <meta charset='UTF-8'>
+  <title>electron-wallpaper example</title>
+  <style>
+    body {
+      padding: 10px 20px;
+      color: #EEE;
+      background-color: #333;
+      font-family: Arial, Helvetica, sans-serif;
+      text-align: center;
+    }
 
-      p {
-        font-size: 12px;
-      }
+    h1,
+    h2 {
+      margin: 0 0 10px;
+      font-weight: normal;
+    }
 
-      button {
-        background-color: transparent;
-        color: #52dac2;
-        border: 2px solid #52dac2;
-        border-radius: 10px;
-        padding: 5px 30px;
-        cursor: pointer;
-      }
+    p {
+      font-size: 12px;
+    }
 
-      button:hover {
-        color: #60ffe3;
-        border-color: #60ffe3;
-      }
+    button {
+      background-color: transparent;
+      color: #52dac2;
+      border: 2px solid #52dac2;
+      border-radius: 10px;
+      padding: 5px 30px;
+      cursor: pointer;
+    }
 
-      .button_container {
-        padding: 30px 0px;
-      }
+    button:hover {
+      color: #60ffe3;
+      border-color: #60ffe3;
+    }
 
-      input[type='text'] {
-        padding: 5px 10px;
-      }
+    .button_container {
+      padding: 30px 0px;
+    }
 
-      input[type='text']:focus {
-        outline-color: #52dac2;
-        outline-style: solid;
-        outline-width: 2px;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>electron-wallpaper example</h1>
-    <div class='button_container'>
-        <button id='attachButton'>Attach dashboard</button>
-        <button id='killButton'>Kill dashboard</button>
-        <p id='attachMessage'></p>
-    </div>
+    input[type='text'] {
+      padding: 5px 10px;
+    }
 
-    <script>
-      (function() {
-        const electronWallpaper = require('..');
-        const electron = require('electron');
+    input[type='text']:focus {
+      outline-color: #52dac2;
+      outline-style: solid;
+      outline-width: 2px;
+    }
+  </style>
+</head>
 
-        const attachButton = document.getElementById('attachButton');
-        const killButton = document.getElementById('killButton');
-        const attachMessage = document.getElementById('attachMessage');
+<body>
+  <h1>electron-wallpaper example</h1>
+  <div class='button_container'>
+    <button id='attachButton'>Attach dashboard</button>
+    <button id='killButton'>Kill dashboard</button>
+    <p id='attachMessage'></p>
+  </div>
 
-        let dashboardWindow;
+  <script>
+    (function () {
+      /**
+       *
+       * @type {electronWallpaper}
+       */
+      const electronWallpaper = require('..');
+      const electron = require('electron');
 
-        attachButton.onclick = function() {
-          if (dashboardWindow) {
-            return;
-          }
+      const attachButton = document.getElementById('attachButton');
+      const killButton = document.getElementById('killButton');
+      const attachMessage = document.getElementById('attachMessage');
 
-          const windowProperties = {
-            x: 0,
-            y: 0,
-            width: 1080,
-            height: 1920,
-            // width: 1920,
-            // height: 1080,
-            transparent: true,
-            frame: false
-          };
+      let dashboardWindow;
 
-          dashboardWindow = new electron.remote.BrowserWindow(windowProperties);
-          dashboardWindow.loadFile('dashboard.html');
+      attachButton.onclick = function () {
+        if (dashboardWindow) {
+          return;
+        }
 
-          try {
-            electronWallpaper.attachWindow(dashboardWindow);
-            attachMessage.innerText = 'Attached a window running dashboard.html to the desktop, the dashboard will be killed when you destroy this window. But the default behaviour is to let the window live.';
-          } catch (error) {
-            attachMessage.innerText = 'Unable to attach window: Error ' + error.message;
-            console.error(error);
-            dashboardWindow.close();
-            dashboardWindow = null;
-          }
-         };
-
-        const closeDashboard = function() {
-          if (dashboardWindow) {
-            dashboardWindow.close();
-            dashboardWindow = null;
-            attachMessage.innerText = 'Killed the wallpaper window';
-          }
+        const windowProperties = {
+          x: 0,
+          y: 0,
+          width: (1920 * 3),
+          height: 1080,
+          transparent: true
         };
+        try {
+          dashboardWindow = electronWallpaper.createWallpaperWindow(windowProperties);
+          dashboardWindow.loadFile('dashboard.html');
+          attachMessage.innerText = 'Attached a window running dashboard.html to the desktop, the dashboard will be killed when you destroy this window. But the default behaviour is to let the window live.' + JSON.stringify(windowProperties, null, 4);
+          console.log(dashboardWindow.getBounds() )
+          dashboardWindow.setBounds({ width: windowProperties.width })
+          console.log(dashboardWindow.getBounds() )
+        } catch (error) {
+          attachMessage.innerText = 'Unable to attach window: Error ' + error.message;
+          console.error(error);
+          dashboardWindow.close();
+          dashboardWindow = null;
+        }
+      };
 
-        killButton.onclick = closeDashboard;
+      const closeDashboard = function () {
+        if (dashboardWindow) {
+          dashboardWindow.close();
+          dashboardWindow = null;
+          attachMessage.innerText = 'Killed the wallpaper window';
+        }
+      };
 
-        // Close the dashboard when closing this window,
-        // otherwise people trying the example will have the dashboard
-        // stuck on their desktop
-        window.onbeforeunload = closeDashboard;
-      }());
-    </script>
-  </body>
+      killButton.onclick = closeDashboard;
+
+      // Close the dashboard when closing this window,
+      // otherwise people trying the example will have the dashboard
+      // stuck on their desktop
+      window.onbeforeunload = closeDashboard;
+    }());
+  </script>
+</body>
+
 </html>
