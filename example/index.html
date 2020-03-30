@@ -56,9 +56,26 @@
         <button id='attachButton'>Attach dashboard</button>
         <button id='killButton'>Kill dashboard</button>
         <p id='attachMessage'></p>
+
+        <button id='attachAudioWindowBtn'>Attach audio visualisation</button>
+        <button id='detachAudioWindowButton'>Kill audio visualisation</button>
+        <p id='audioWindowMessage'></p>
+
     </div>
 
     <script>
+      (function() {
+        const audioWindow = new (require('./audio-visualisation/audioWindow'))({ messageElement: window.document.getElementById('audioWindowMessage') });
+        window.document.getElementById('attachAudioWindowBtn').onclick = e => {
+          e.preventDefault();
+          audioWindow.attach();
+        };
+        window.document.getElementById('detachAudioWindowButton').onclick = e => {
+          e.preventDefault();
+          audioWindow.detach();
+        };
+      }());
+
       (function() {
         const electronWallpaper = require('..');
         const electron = require('electron');
